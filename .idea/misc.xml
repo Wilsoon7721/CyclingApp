@@ -3,10 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/CyclingDirections/app/src/main/res/drawable/dotted.xml" value="0.2985" />
+        <entry key="..\:/AndroidStudioProjects/CyclingDirections/app/src/main/res/layout/home_screen.xml" value="0.18802083333333333" />
         <entry key="..\:/AndroidStudioProjects/CyclingDirectionsHint/app/src/main/res/layout/activity_main.xml" value="0.32608695652173914" />
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">CyclistDirections</string>
+    <string name="app_name">CyclingDirections</string>
+    <string name="insert_code_field_hint">Insert Code</string>
 </resources>

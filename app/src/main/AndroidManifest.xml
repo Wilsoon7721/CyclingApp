@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.gmail.calorious.cyclistdirections">
 
     <application
@@ -11,7 +12,9 @@
         android:theme="@style/Theme.CyclistDirections">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
