@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CyclistDirections">
         <activity
-            android:name=".MainActivity"
+            android:name=".HomeScreenActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             tools:ignore="LockedOrientationActivity">
