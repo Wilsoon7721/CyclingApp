@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.gmail.calorious.cyclistdirections.db.RoomDatabase;
 
 public class ActiveRoomActivity extends AppCompatActivity {
-        // Chances are its gonna waste a shit ton of data, so u can try to optimise it 
+        // Chances are its gonna waste a shit ton of data, so u can try to optimise it
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
