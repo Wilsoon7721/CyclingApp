@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "287026466238",
+    "project_id": "cyclistdirections",
+    "storage_bucket": "cyclistdirections.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:287026466238:android:70d06ef3480caeac9e7def",
+        "android_client_info": {
+          "package_name": "com.gmail.calorious.cyclistdirections"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "287026466238-iglju2jbr0aoftm4l4h43gfvh410a3kk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgvHSEYVey0D1VltO9yjMFX2etIA2tNz4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "287026466238-iglju2jbr0aoftm4l4h43gfvh410a3kk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
