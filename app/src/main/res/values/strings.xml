@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">CyclingDirections</string>
     <string name="insert_code_field_hint">Insert Code</string>
+    <string name="six_digit_code_warning">Codes should be 6 digit!</string>
 </resources>
