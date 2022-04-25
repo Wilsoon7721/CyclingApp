@@ -7,8 +7,8 @@ public class CyclistRoom {
     /*
      * General class for an active room
      */
-    private long id;
-    private Set<User> activeUsers = new HashSet<>();
+    private String id;
+    private final Set<User> activeUsers = new HashSet<>();
     private boolean started = false;
 
     public void started(boolean b) {
@@ -23,7 +23,7 @@ public class CyclistRoom {
         return activeUsers;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -38,16 +38,16 @@ public class CyclistRoom {
     }
 
     // Same implementation, different parameter
-    public void addUser(long uniqueId, String macAddress, String androidId) {
+    public void addUser(String uniqueId, String macAddress, String androidId) {
         User user = new User(uniqueId, macAddress, androidId);
         if(activeUsers.contains(user)) return;
         activeUsers.add(user);
     }
 
     // Same implementation, different parameter
-    public void removeUserByUniqueIdentifier(long uniqueId) {
+    public void removeUserByUniqueIdentifier(String uniqueId) {
         for(User user : activeUsers) {
-            if(user.getUniqueIdentifier() == uniqueId) {
+            if(user.getUniqueIdentifier().equals(uniqueId)) {
                 activeUsers.remove(user);
                 break;
             }
