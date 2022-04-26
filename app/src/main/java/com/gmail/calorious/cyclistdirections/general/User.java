@@ -1,5 +1,8 @@
 package com.gmail.calorious.cyclistdirections.general;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 public class User {
     /*
      * General class for User
@@ -30,5 +33,10 @@ public class User {
 
     protected String getAndroidId() {
         return androidId;
+    }
+
+    public String getEncodedAndroidId() {
+        byte[] bytes = androidId.getBytes(StandardCharsets.UTF_8);
+        return Base64.getEncoder().encodeToString(bytes);
     }
 }
