@@ -50,14 +50,14 @@ public class FirebaseCenter {
     }
 
     public User getUser(String uniqueId) {
-        users.child(uniqueId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
+        users.child(uniqueId).get().addOnCompleteListener((task) -> {
                 if(!task.isSuccessful()) {
                     Log.e("Firebase Cloud", "Failed to obtain data snapshot for getUser()");
                     Log.e("Firebase Cloud", "Data was requested for unique id: " + uniqueId);
+                    return;
                 }
-            }
-        })
+                Log.i("Firebase Cloud", "Successfully received a response from Firebase!");
+                task.getResult().getChildren();
+        });
     }
 }
