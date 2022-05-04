@@ -37,9 +37,10 @@ public class CyclistRoom {
         activeUsers.remove(user);
     }
 
+
     // Same implementation, different parameter
-    public void addUser(String uniqueId, String macAddress, String androidId) {
-        User user = new User(uniqueId, macAddress, androidId);
+    public void addUser(String brand, String model, String uniqueId, String macAddress, String androidId) {
+        User user = new User(brand, model, uniqueId, macAddress, androidId);
         if(activeUsers.contains(user)) return;
         activeUsers.add(user);
     }
@@ -74,4 +75,8 @@ public class CyclistRoom {
         }
     }
 
+    // Same implementation, mass deletion
+    public void removeUsersByBrandAndModel(String brand, String model) {
+        activeUsers.removeIf(user -> user.getBrand().equalsIgnoreCase(brand) && user.getModel().equalsIgnoreCase(model));
+    }
 }
