@@ -11,6 +11,4 @@ public class FirebaseCentre {
         usersRef = database.getReference("users");
         roomsRef = database.getReference("rooms");
     }
-
-    public
 }

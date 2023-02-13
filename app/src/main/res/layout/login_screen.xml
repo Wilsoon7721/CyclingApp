@@ -7,13 +7,100 @@
 
     <EditText
         android:id="@+id/login_phone_number_field"
+        android:layout_width="192dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="173dp"
+        android:layout_marginBottom="495dp"
+        android:ems="10"
+        android:hint="Phone No."
+        android:importantForAutofill="no"
+        android:inputType="phone" />
+
+    <TextView
+        android:id="@+id/NOMODIFY_PHONENUMBER_COUNTRY_CODE_PREFIX"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="505dp"
+        android:paddingStart="8dp"
+        android:text="+65" />
+
+    <TextView
+        android:id="@+id/NOMODIFY_GENERAL_LOGIN_MESSAGE"
+        android:layout_width="308dp"
+        android:layout_height="62dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="597dp"
+        android:text="Please input your mobile number and click 'Get OTP' to verify."
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/login_get_otp_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="101dp"
-        android:layout_marginBottom="497dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="498dp"
+        android:backgroundTint="@color/teal_700"
+        android:text="Get OTP" />
+
+    <EditText
+        android:id="@+id/login_otp_field"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="208dp"
+        android:layout_marginBottom="365dp"
         android:ems="10"
-        android:inputType="phone" />
+        android:hint="Insert OTP"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/NOMODIFY_LOGIN_GENERAL_TEXT"
+        android:layout_width="290dp"
+        android:layout_height="41dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="451dp"
+        android:text="Standard carrier charges may apply."
+        android:textColor="#6E6A6A" />
+
+    <Button
+        android:id="@+id/login_verify_otp_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="110dp"
+        android:layout_marginBottom="368dp"
+        android:backgroundTint="@color/teal_700"
+        android:text="Verify" />
+
+    <TextView
+        android:id="@+id/login_timeout_expiry"
+        android:layout_width="266dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="85dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginBottom="320dp"
+        android:text="This request will timeout in X seconds."
+        android:textColor="#FFFF0000" />
 
 </RelativeLayout>
