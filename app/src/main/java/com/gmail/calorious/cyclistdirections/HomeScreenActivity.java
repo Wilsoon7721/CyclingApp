@@ -55,11 +55,10 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void onElementPressed(View view) {
         if(view.getId() == R.id.room_create_button) {
-            // Room create button
+            // TODO Room create button
             return;
         }
         if(view.getId() == R.id.room_join_button) {
-            // Room join button
             String specifiedCode = joinRoomField.getText().toString();
             if(specifiedCode.trim().isEmpty()) {
                 showErrorAlert("The specified code cannot be empty.");
@@ -69,11 +68,11 @@ public class HomeScreenActivity extends AppCompatActivity {
                 showErrorAlert("The specified code must be 4 characters long.");
                 return;
             }
-            // LOGIC
+            // TODO ROOM JOIN BUTTON LOGIC
             return;
         }
         if(view.getId() == R.id.room_join_code_field) {
-            // Room join code field
+            // TODO Room join code field
             return;
         }
     }

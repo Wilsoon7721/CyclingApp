@@ -50,11 +50,11 @@ public class LoginScreenActivity extends AppCompatActivity {
             return;
         }
         if(view.getId() == R.id.login_get_otp_button) {
-            // Get Number from phone number field, ask firebase to dispatch message
+            // TODO Get Number from phone number field, ask firebase to dispatch message
             return;
         }
         if(view.getId() == R.id.login_verify_otp_button) {
-            // Get OTP from firebase and match with otp field, create UID OR return existing UID from Firebase and attach to security.txt file in data folder.
+            // TODO Get OTP from firebase and match with otp field, create UID OR return existing UID from Firebase and attach to security.txt file in data folder.
             return;
         }
     }
