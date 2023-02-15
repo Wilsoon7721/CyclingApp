@@ -6,21 +6,32 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import com.gmail.calorious.cyclistdirections.firebase.PhoneAuthenticationCallback;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.Objects;
 
 public class LoginScreenActivity extends AppCompatActivity {
     private static final String TAG = "LoginScreenActivity";
+    private static PhoneAuthenticationCallback loginCallback;
     private Button getOTP, verifyOTP;
     private EditText otpField, phoneNumberField;
     private TextView timeoutExpiry;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loginCallback = new PhoneAuthenticationCallback(this);
         Toolbar top_toolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(top_toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
@@ -45,17 +56,21 @@ public class LoginScreenActivity extends AppCompatActivity {
     }
 
     public void onElementPressed(View view) {
-        if(view.getVisibility() != View.VISIBLE) {
+        if (view.getVisibility() != View.VISIBLE) {
             Log.d(TAG, "Ignoring interaction with " + view.getId() + " - View is being interacted with while the view is invisible.");
             return;
         }
-        if(view.getId() == R.id.login_get_otp_button) {
+        if (view.getId() == R.id.login_get_otp_button) {
             // TODO Get Number from phone number field, ask firebase to dispatch message
             return;
         }
-        if(view.getId() == R.id.login_verify_otp_button) {
+        if (view.getId() == R.id.login_verify_otp_button) {
             // TODO Get OTP from firebase and match with otp field, create UID OR return existing UID from Firebase and attach to security.txt file in data folder.
             return;
         }
+    }
+
+    public static PhoneAuthenticationCallback getDefaultCallback() {
+        return loginCallback;
     }
 }

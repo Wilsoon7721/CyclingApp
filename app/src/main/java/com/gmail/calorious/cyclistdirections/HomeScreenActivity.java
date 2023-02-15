@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -24,6 +25,7 @@ import java.util.Scanner;
 public class HomeScreenActivity extends AppCompatActivity {
     private Button createRoomButton, joinRoomButton;
     private EditText joinRoomField;
+    private TextView loggedInMessage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         createRoomButton = findViewById(R.id.room_create_button);
         joinRoomButton = findViewById(R.id.room_join_button);
         joinRoomField = findViewById(R.id.room_join_code_field);
+        loggedInMessage = findViewById(R.id.logged_in_message);
         File securityFile = findInternalFile("security.txt");
         if(securityFile == null) {
             Log.d("Login Handler", "Could not find security.txt in internal data directory, redirecting user to login screen.");
@@ -51,6 +54,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             return;
         }
         // TODO dig through firebase and login based on existing UID
+        // Update message using loggedInMessage variable.
     }
 
     public void onElementPressed(View view) {

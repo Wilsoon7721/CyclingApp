@@ -2,19 +2,28 @@ package com.gmail.calorious.cyclistdirections.firebase;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.gmail.calorious.cyclistdirections.LoginScreenActivity;
 import com.gmail.calorious.cyclistdirections.generic.Room;
 import com.gmail.calorious.cyclistdirections.generic.RoomSnapshot;
 import com.gmail.calorious.cyclistdirections.generic.User;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-// TODO PRIORITY: ADD METHODS FOR GENERATING OTP FOR MOBILE NUMBER AS WELL AS VERIFYING WITH FIREBASE.
 public class FirebaseCentre {
     public static final String TAG = "Firebase";
     private static FirebaseDatabase database;
@@ -119,5 +128,13 @@ public class FirebaseCentre {
             Log.e(TAG, "An error occurred while deleting Room with code '" + joinCode + "'.", task.getException());
         });
         return success.get();
+    }
+
+    // Start verification for a phone number
+    // Note: Phone Number Format should follow "65XXXXXXXX"
+    // Note 2: Timeout in seconds should follow a countdown inside login_screen.xml
+    public static void startNumberVerification(String phoneNumber, long timeoutSeconds) {
+        PhoneAuthOptions authOptions = PhoneAuthOptions.newBuilder().setPhoneNumber(phoneNumber).setTimeout(timeoutSeconds,TimeUnit.SECONDS).setCallbacks(LoginScreenActivity.getDefaultCallback()).build();
+        PhoneAuthProvider.verifyPhoneNumber(authOptions);
     }
 }
