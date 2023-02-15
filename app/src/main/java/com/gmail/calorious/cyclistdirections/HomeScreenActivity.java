@@ -59,7 +59,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         }
         String loginMessage = "Welcome " + user.getName() + "!";
         loggedInMessage.setText(loginMessage);
-        Log.d("Login Handler", "Successfully logged in as " + name + ".");;
+        Log.d("Login Handler", "Successfully logged in as " + user.getName() + ".");;
     }
 
     public void onElementPressed(View view) {

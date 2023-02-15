@@ -16,7 +16,8 @@
         android:ems="10"
         android:hint="Phone No."
         android:importantForAutofill="no"
-        android:inputType="phone" />
+        android:inputType="phone"
+        android:onClick="onElementPressed" />
 
     <TextView
         android:id="@+id/NOMODIFY_PHONENUMBER_COUNTRY_CODE_PREFIX"
@@ -54,6 +55,7 @@
         android:layout_marginEnd="70dp"
         android:layout_marginBottom="498dp"
         android:backgroundTint="@color/teal_700"
+        android:onClick="onElementPressed"
         android:text="Get OTP" />
 
     <EditText
@@ -66,7 +68,8 @@
         android:layout_marginBottom="365dp"
         android:ems="10"
         android:hint="Insert OTP"
-        android:inputType="number" />
+        android:inputType="number"
+        android:onClick="onElementPressed" />
 
     <TextView
         android:id="@+id/NOMODIFY_LOGIN_GENERAL_TEXT"
@@ -88,6 +91,7 @@
         android:layout_marginEnd="110dp"
         android:layout_marginBottom="368dp"
         android:backgroundTint="@color/teal_700"
+        android:onClick="onElementPressed"
         android:text="Verify" />
 
     <TextView

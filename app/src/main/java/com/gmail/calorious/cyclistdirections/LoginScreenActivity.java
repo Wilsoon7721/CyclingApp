@@ -2,7 +2,9 @@ package com.gmail.calorious.cyclistdirections;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,15 +14,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginScreenActivity extends AppCompatActivity {
     private static final String TAG = "LoginScreenActivity";
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
+    private SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     private Button getOTP, verifyOTP;
     private EditText otpField, phoneNumberField;
     private TextView timeoutExpiry, verificationResult;
@@ -48,6 +49,7 @@ public class LoginScreenActivity extends AppCompatActivity {
         Toolbar top_toolbar = findViewById(R.id.top_toolbar);
         setSupportActionBar(top_toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Login");
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         getOTP = findViewById(R.id.login_get_otp_button);
         otpField = findViewById(R.id.login_otp_field);
         timeoutExpiry = findViewById(R.id.login_timeout_expiry);
@@ -58,7 +60,11 @@ public class LoginScreenActivity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 // TODO Get UUID from Firebase, set UUID to security.txt and update UI
-
+                String code = phoneAuthCredential.getSmsCode();
+                if(code != null) {
+                    otpField.setText(code);
+                    verifyCode(code);
+                }
             }
 
             @Override
@@ -103,11 +109,36 @@ public class LoginScreenActivity extends AppCompatActivity {
             return;
         }
         if (view.getId() == R.id.login_get_otp_button) {
-            phoneNumberField
+            String phoneString = phoneNumberField.getText().toString();
+            if(phoneString.isEmpty()) {
+                showErrorAlert("Phone number cannot be empty.");
+                return;
+            }
+            int phone = -1;
+            try {
+                phone = Integer.parseInt(phoneString);
+            } catch(NumberFormatException ex) {
+                showErrorAlert("You must enter a valid phone number.");
+                return;
+            }
+            startVerification(phone, 60);
             return;
         }
         if (view.getId() == R.id.login_verify_otp_button) {
             // TODO Get OTP from firebase and match with otp field, create UID OR return existing UID from Firebase and attach to security.txt file in data folder.
+            String otpString = otpField.getText().toString();
+            if(otpString.isEmpty()) {
+                showErrorAlert("The OTP cannot be empty.");
+                return;
+            }
+            int otp;
+            try {
+                otp = Integer.parseInt(otpString);
+            } catch(NumberFormatException ex) {
+                showErrorAlert("The OTP must be a valid code.");
+                return;
+            }
+            verifyCode(String.valueOf(otp));
             return;
         }
         if(view.getId() == R.id.login_otp_field) {
@@ -116,32 +147,37 @@ public class LoginScreenActivity extends AppCompatActivity {
         }
     }
 
+    private void showErrorAlert(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("error").setMessage(msg).setPositiveButton("OK", null).setCancelable(false);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void signInWithPhoneCredential(PhoneAuthCredential credential, int phoneNumber) {
-        auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(!task.isSuccessful()) {
-                    Log.e(TAG, "'" + otpField.getText().toString() + "' is an invalid verification code.");
-                    verificationResult.setTextColor(getResources().getColor(R.color.pure_red));
-                    verificationResult.setText("The verification code provided is invalid.");
-                    verificationResult.setVisibility(View.VISIBLE);
-                    otpField.setText("");
-                    return;
-                }
-                Log.d(TAG, "Successfully logged in the user.");
-                verificationResult.setTextColor(getResources().getColor(R.color.pure_green));
-                verificationResult.setText("Logged in, please wait...");
+        auth.signInWithCredential(credential).addOnCompleteListener(task -> {
+            if(!task.isSuccessful()) {
+                Log.e(TAG, "'" + otpField.getText().toString() + "' is an invalid verification code.");
+                verificationResult.setTextColor(getResources().getColor(R.color.pure_red));
+                verificationResult.setText("The verification code provided is invalid.");
                 verificationResult.setVisibility(View.VISIBLE);
-                String uuid = FirebaseCentre.getUserUUID(phoneNumber);
-                if(uuid == null || uuid.trim().isEmpty()) {
-                    Log.e(TAG, "Failed to write UUID to security.txt: Firebase could not resolve UUID.");
-                    return;
-                }
-                writeSecurityFile(uuid.getBytes(StandardCharsets.UTF_8));
-                // Relaunch other activity
-                Intent intent = new Intent(LoginScreenActivity.this, HomeScreenActivity.class);
-                startActivity(intent);
+                otpField.setText("");
+                return;
             }
+            Log.d(TAG, "Successfully logged in the user.");
+            verificationResult.setTextColor(getResources().getColor(R.color.pure_green));
+            verificationResult.setText("Logged in, please wait...");
+            verificationResult.setVisibility(View.VISIBLE);
+            String uuid = FirebaseCentre.getUserUUID(phoneNumber);
+            if(uuid == null || uuid.trim().isEmpty()) {
+                Log.e(TAG, "Failed to write UUID to security.txt: Firebase could not resolve UUID.");
+                return;
+            }
+            writeSecurityFile(uuid.getBytes(StandardCharsets.UTF_8));
+            // Relaunch other activity
+            Intent intent = new Intent(LoginScreenActivity.this, HomeScreenActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -158,9 +194,25 @@ public class LoginScreenActivity extends AppCompatActivity {
     // Start verification for a phone number
     // Note: Phone Number Format should follow "65XXXXXXXX"
     // Note 2: Timeout in seconds should follow a countdown inside login_screen.xml
-    private void startVerification(String phoneNumber, long timeoutSeconds) {
-        PhoneAuthOptions authOptions = PhoneAuthOptions.newBuilder().setPhoneNumber(phoneNumber).setTimeout(timeoutSeconds, TimeUnit.SECONDS).setCallbacks(LoginScreenActivity.getDefaultCallback()).build();
+    private void startVerification(int phoneNumber, long timeoutSeconds) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("LOGGED_PHONE_NUMBER", phoneNumber);
+        editor.apply();
+        String phone = "+65" + phoneNumber;
+        PhoneAuthOptions authOptions = PhoneAuthOptions.newBuilder().setPhoneNumber(phone).setTimeout(timeoutSeconds, TimeUnit.SECONDS).setCallbacks(defaultCallback).build();
         PhoneAuthProvider.verifyPhoneNumber(authOptions);
+        Log.d(TAG, "Starting phone number verification of " + phone + ".");
+        // TODO Create timeout countdown in login_screen.xml here.
+    }
+
+    private void verifyCode(String code) {
+        int phoneNumber = sharedPreferences.getInt("LOGGED_PHONE_NUMBER", -1);
+        if(phoneNumber == -1) {
+            Log.e(TAG, "Failed to verify code: SharedPreferences could not retrieve the logged in phone number.");
+            return;
+        }
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+        signInWithPhoneCredential(credential, phoneNumber);
     }
 
 }
