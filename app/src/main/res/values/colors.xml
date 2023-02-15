@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dotted_line_color">#454F48</color>
+    <color name="pure_red">#FF0000</color>
+    <color name="pure_green">#29F00E</color>
 </resources>

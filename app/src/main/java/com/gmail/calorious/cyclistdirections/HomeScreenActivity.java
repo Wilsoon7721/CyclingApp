@@ -1,7 +1,5 @@
 package com.gmail.calorious.cyclistdirections;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,9 +13,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
+import com.gmail.calorious.cyclistdirections.generic.User;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
@@ -38,7 +37,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         joinRoomButton = findViewById(R.id.room_join_button);
         joinRoomField = findViewById(R.id.room_join_code_field);
         loggedInMessage = findViewById(R.id.logged_in_message);
-        File securityFile = findInternalFile("security.txt");
+        File securityFile = findSecurityFile();
         if(securityFile == null) {
             Log.d("Login Handler", "Could not find security.txt in internal data directory, redirecting user to login screen.");
             Intent loginIntent = new Intent(HomeScreenActivity.this, LoginScreenActivity.class);
@@ -53,8 +52,14 @@ public class HomeScreenActivity extends AppCompatActivity {
             ex.printStackTrace();
             return;
         }
-        // TODO dig through firebase and login based on existing UID
-        // Update message using loggedInMessage variable.
+        User user = FirebaseCentre.getUser(uid);
+        if(user == null) {
+            Log.e("Login Handler", "The UUID was retrieved from security.txt, but Firebase could not resolve the UUID.");
+            return;
+        }
+        String loginMessage = "Welcome " + user.getName() + "!";
+        loggedInMessage.setText(loginMessage);
+        Log.d("Login Handler", "Successfully logged in as " + name + ".");;
     }
 
     public void onElementPressed(View view) {
@@ -88,19 +93,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private File findInternalFile(String fileName) {
-        File file = new File(getFilesDir(), fileName);
+    private File findSecurityFile() {
+        File file = new File(getFilesDir(), "security.txt");
         if(!file.exists())
             return null;
         return file;
-    }
-
-    private void writeInternalFile(String fileName, byte[] contents) {
-        try(FileOutputStream fos = openFileOutput(fileName, Context.MODE_PRIVATE)) {
-            fos.write(contents);
-        } catch (IOException e) {
-            Log.e("IO Stream", "An I/O error occurred when writing to an internal file.");
-            e.printStackTrace();
-        }
     }
 }

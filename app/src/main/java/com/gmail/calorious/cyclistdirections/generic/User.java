@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *  - updateDatabase() method passes this entire User object to the database.
  *  - As such, changes to phone no. and name can be made within the object itself prior to running updateDatabase().
  */
+// Phone Number in Integer is XXXXXXX [No Country Code]
 public class User {
     private UUID userUUID;
     private int phoneNumber;

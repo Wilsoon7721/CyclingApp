@@ -10,12 +10,16 @@ import com.gmail.calorious.cyclistdirections.generic.RoomSnapshot;
 import com.gmail.calorious.cyclistdirections.generic.User;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,6 +77,42 @@ public class FirebaseCentre {
         return user.get();
     }
 
+    public static String getUserUUID(int phoneNumber) {
+        AtomicReference<String> uuid = new AtomicReference<>();
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "Searching for User UUID from " + phoneNumber + "...");
+                for(DataSnapshot uuidSnapshot : snapshot.getChildren()) {
+                    // Resolve User from uuid snapshot
+                    String stringUUID = uuidSnapshot.getKey();
+                    Log.d(TAG, " -- Resolving Key: " + stringUUID);
+                    User u = uuidSnapshot.getValue(User.class);
+                    if(u == null) {
+                        Log.d(TAG, " --> Skipping key as the associated User could not be found.");
+                        continue;
+                    }
+                    int pN = u.getPhoneNumber();
+                    Log.d(TAG, " -- Resolving Phone Number from User object: " + pN); // TODO [END OF DEBUG MODE] These debug messages must be removed as it contains phone numbers.
+                    if(phoneNumber != pN) {
+                        Log.d(TAG, " --> Skipping key as the phone number does not match the query.");
+                        continue;
+                    }
+                    Log.d(TAG, " --> Matching phone number found, utilising the UUID...");
+                    uuid.set(stringUUID);
+                    break;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // TODO Request cancelled.
+                Log.e(TAG, "Error code " + error.getCode() + " has occurred while attempting to search for a user's UUID.", error.toException());
+            }
+        });
+        return uuid.get();
+    }
+
     public static boolean deleteUser(String uuid) {
         AtomicBoolean success = new AtomicBoolean();
         usersRef.child(uuid).removeValue().addOnCompleteListener((task) -> {
@@ -128,13 +168,5 @@ public class FirebaseCentre {
             Log.e(TAG, "An error occurred while deleting Room with code '" + joinCode + "'.", task.getException());
         });
         return success.get();
-    }
-
-    // Start verification for a phone number
-    // Note: Phone Number Format should follow "65XXXXXXXX"
-    // Note 2: Timeout in seconds should follow a countdown inside login_screen.xml
-    public static void startNumberVerification(String phoneNumber, long timeoutSeconds) {
-        PhoneAuthOptions authOptions = PhoneAuthOptions.newBuilder().setPhoneNumber(phoneNumber).setTimeout(timeoutSeconds,TimeUnit.SECONDS).setCallbacks(LoginScreenActivity.getDefaultCallback()).build();
-        PhoneAuthProvider.verifyPhoneNumber(authOptions);
     }
 }
