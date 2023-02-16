@@ -106,7 +106,6 @@ public class FirebaseCentre {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // TODO Request cancelled.
                 Log.e(TAG, "Error code " + error.getCode() + " has occurred while attempting to search for a user's UUID.", error.toException());
             }
         });

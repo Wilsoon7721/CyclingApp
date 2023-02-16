@@ -1,9 +1,13 @@
 package com.gmail.calorious.cyclistdirections;
 
+import static android.view.View.VISIBLE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
 import com.google.firebase.FirebaseException;
@@ -31,11 +36,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LoginScreenActivity extends AppCompatActivity {
     private static final String TAG = "LoginScreenActivity";
     private static FirebaseAuth auth = FirebaseAuth.getInstance();
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private Handler handler = new Handler(Looper.getMainLooper());
     private SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     private Button getOTP, verifyOTP;
     private EditText otpField, phoneNumberField;
@@ -59,7 +69,6 @@ public class LoginScreenActivity extends AppCompatActivity {
         defaultCallback = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                // TODO Get UUID from Firebase, set UUID to security.txt and update UI
                 String code = phoneAuthCredential.getSmsCode();
                 if(code != null) {
                     otpField.setText(code);
@@ -70,11 +79,14 @@ public class LoginScreenActivity extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
                 if(e instanceof FirebaseAuthInvalidCredentialsException) {
-                    // TODO Firebase invalid request handler
+                    Log.e("Firebase", "An invalid request was sent to Firebase.");
+                    e.printStackTrace();
                 } else if(e instanceof FirebaseTooManyRequestsException) {
-                    // TODO Firebase sms quota hit handler
+                    Log.e("Firebase", "The Firebase quota limit has been reached.");
                 }
-                // TODO Display UI message
+                String serverError = "A server error has occurred: " + e.getMessage();
+                verificationResult.setText(serverError);
+                verificationResult.setVisibility(VISIBLE);
 
             }
 
@@ -85,7 +97,6 @@ public class LoginScreenActivity extends AppCompatActivity {
                 Toast.makeText(LoginScreenActivity.this, "Verification code sent!", Toast.LENGTH_LONG).show();
                 verificationId = verifyId;
                 resendingToken = forceResendingToken;
-                // TODO Create an async countdown somewhere else that counts down from timeoutseconds.
             }
         };
         // Set invisible in onCreate
@@ -100,11 +111,17 @@ public class LoginScreenActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // TODO Create saved bundle state so that android remembers if you have already requested for an OTP
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdownNow();
     }
 
     public void onElementPressed(View view) {
-        if (view.getVisibility() != View.VISIBLE) {
+        if (view.getVisibility() != VISIBLE) {
             Log.d(TAG, "Ignoring interaction with " + view.getId() + " - View is being interacted with while the view is invisible.");
             return;
         }
@@ -121,11 +138,10 @@ public class LoginScreenActivity extends AppCompatActivity {
                 showErrorAlert("You must enter a valid phone number.");
                 return;
             }
-            startVerification(phone, 60);
+            startVerification(phone, 60L);
             return;
         }
         if (view.getId() == R.id.login_verify_otp_button) {
-            // TODO Get OTP from firebase and match with otp field, create UID OR return existing UID from Firebase and attach to security.txt file in data folder.
             String otpString = otpField.getText().toString();
             if(otpString.isEmpty()) {
                 showErrorAlert("The OTP cannot be empty.");
@@ -160,14 +176,14 @@ public class LoginScreenActivity extends AppCompatActivity {
                 Log.e(TAG, "'" + otpField.getText().toString() + "' is an invalid verification code.");
                 verificationResult.setTextColor(getResources().getColor(R.color.pure_red));
                 verificationResult.setText("The verification code provided is invalid.");
-                verificationResult.setVisibility(View.VISIBLE);
+                verificationResult.setVisibility(VISIBLE);
                 otpField.setText("");
                 return;
             }
             Log.d(TAG, "Successfully logged in the user.");
             verificationResult.setTextColor(getResources().getColor(R.color.pure_green));
             verificationResult.setText("Logged in, please wait...");
-            verificationResult.setVisibility(View.VISIBLE);
+            verificationResult.setVisibility(VISIBLE);
             String uuid = FirebaseCentre.getUserUUID(phoneNumber);
             if(uuid == null || uuid.trim().isEmpty()) {
                 Log.e(TAG, "Failed to write UUID to security.txt: Firebase could not resolve UUID.");
@@ -194,7 +210,7 @@ public class LoginScreenActivity extends AppCompatActivity {
     // Start verification for a phone number
     // Note: Phone Number Format should follow "65XXXXXXXX"
     // Note 2: Timeout in seconds should follow a countdown inside login_screen.xml
-    private void startVerification(int phoneNumber, long timeoutSeconds) {
+    private void startVerification(int phoneNumber, Long timeoutSeconds) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("LOGGED_PHONE_NUMBER", phoneNumber);
         editor.apply();
@@ -202,7 +218,30 @@ public class LoginScreenActivity extends AppCompatActivity {
         PhoneAuthOptions authOptions = PhoneAuthOptions.newBuilder().setPhoneNumber(phone).setTimeout(timeoutSeconds, TimeUnit.SECONDS).setCallbacks(defaultCallback).build();
         PhoneAuthProvider.verifyPhoneNumber(authOptions);
         Log.d(TAG, "Starting phone number verification of " + phone + ".");
-        // TODO Create timeout countdown in login_screen.xml here.
+        phoneNumberField.setEnabled(false);
+        otpField.setVisibility(VISIBLE);
+        timeoutExpiry.setVisibility(VISIBLE);
+        verifyOTP.setVisibility(VISIBLE);
+        getOTP.setEnabled(false);
+
+        // UI SAVE POINT
+        LoginModel model = new ViewModelProvider(this).get(LoginModel.class);
+        model.setUIState(new LoginUIState(phoneNumber, true));
+        model.getUIState().observe(this, uiState -> {
+            // Update UI
+            phoneNumberField.setText(uiState.getPhoneNumber());
+            phoneNumberField.setEnabled(false);
+            otpField.setVisibility(VISIBLE);
+            timeoutExpiry.setVisibility(VISIBLE);
+            verifyOTP.setVisibility(VISIBLE);
+            getOTP.setEnabled(false);
+        });
+        AtomicInteger i = new AtomicInteger(timeoutSeconds.intValue());
+        executor.scheduleWithFixedDelay(() -> {
+            i.set(i.getAndDecrement());
+            String text = "This request will timeout in " + i.get() + " seconds.";
+            handler.post(() -> timeoutExpiry.setText(text));
+        }, 0, 1, TimeUnit.SECONDS);
     }
 
     private void verifyCode(String code) {

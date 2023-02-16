@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include android:layout="@layout/main_layout" />
+
+    <Button
+        android:id="@+id/room_leave_button"
+        android:layout_width="85dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:backgroundTint="@color/teal_700"
+        android:text="LEAVE" />
+</RelativeLayout>

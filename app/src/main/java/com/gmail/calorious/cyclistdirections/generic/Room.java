@@ -17,7 +17,7 @@ import java.util.Random;
 /*
  * Notes:
  *  - The database will NEVER have a complete copy of Room as it does not have any data relating to users leaving/joining the room.
- *  - As such, the application must preserve a copy of the Room object.
+ *  - As such, the application must preserve a copy of whichever room the user joins, in the form of the Room    object.
  *  - An updateDatabase() method is available in order to upload the current data to the database.
  *  - However, the data in the database is NEVER current.
  */

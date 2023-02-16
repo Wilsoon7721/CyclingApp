@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
+import com.gmail.calorious.cyclistdirections.generic.Room;
 import com.gmail.calorious.cyclistdirections.generic.User;
 
 import java.io.File;
@@ -64,7 +65,11 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void onElementPressed(View view) {
         if(view.getId() == R.id.room_create_button) {
-            // TODO Room create button
+            // Generate a local room's data by instantiating a new Room object (new Room())
+            // Upload the room to Firebase by running FirebaseCentre#addRoom or Room#updateDatabase
+            Room generatedRoom = new Room();
+
+            // TODO room create - update UI
             return;
         }
         if(view.getId() == R.id.room_join_button) {
@@ -82,6 +87,12 @@ public class HomeScreenActivity extends AppCompatActivity {
         }
         if(view.getId() == R.id.room_join_code_field) {
             // TODO Room join code field
+            return;
+        }
+        if(view.getId() == R.id.home_to_settings_button) {
+            Intent intent = new Intent(HomeScreenActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            finish();
             return;
         }
     }
