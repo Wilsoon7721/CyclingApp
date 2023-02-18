@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
 import com.gmail.calorious.cyclistdirections.generic.Room;
+import com.gmail.calorious.cyclistdirections.generic.RoomManager;
 import com.gmail.calorious.cyclistdirections.generic.User;
 
 import java.io.File;
@@ -68,8 +69,12 @@ public class HomeScreenActivity extends AppCompatActivity {
             // Generate a local room's data by instantiating a new Room object (new Room())
             // Upload the room to Firebase by running FirebaseCentre#addRoom or Room#updateDatabase
             Room generatedRoom = new Room();
-
-            // TODO room create - update UI
+            // Create Room - Send room code across intent
+            Log.d("Rooms", "A new room has been generated with code '" + generatedRoom.getCode() + "'.");
+            RoomManager.updateRoom(generatedRoom.getCode(), generatedRoom);
+            Intent intent = new Intent(this, RoomLobbyActivity.class);
+            intent.putExtra("ROOM_CODE", generatedRoom.getCode());
+            startActivity(intent);
             return;
         }
         if(view.getId() == R.id.room_join_button) {

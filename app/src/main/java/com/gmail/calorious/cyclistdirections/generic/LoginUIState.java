@@ -1,4 +1,4 @@
-package com.gmail.calorious.cyclistdirections;
+package com.gmail.calorious.cyclistdirections.generic;
 
 public class LoginUIState {
     private final int phoneNumber;

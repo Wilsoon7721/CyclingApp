@@ -24,6 +24,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
+import com.gmail.calorious.cyclistdirections.generic.LoginModel;
+import com.gmail.calorious.cyclistdirections.generic.LoginUIState;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.FirebaseAuth;

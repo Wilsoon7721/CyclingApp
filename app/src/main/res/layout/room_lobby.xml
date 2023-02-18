@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <include android:layout="@layout/main_layout" />
 
     <Button
@@ -11,5 +12,18 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="0dp"
         android:backgroundTint="@color/teal_700"
+        android:onClick="onLobbyElementPressed"
         android:text="LEAVE" />
+
+    <TextView
+        android:id="@+id/lobby_room_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="0dp"
+        android:background="#A69A9999"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF" />
 </RelativeLayout>
