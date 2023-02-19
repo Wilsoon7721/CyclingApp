@@ -44,8 +44,18 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lobby_participants_list"
-        android:layout_width="207dp"
-        android:layout_height="336dp"
+        android:layout_width="205dp"
+        android:layout_height="335dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="40dp"
+        android:nestedScrollingEnabled="false" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/lobby_user_location"
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:layout_above="@id/NOMODIFY_PARTICIPANTS_HEADER"
+        android:layout_below="@id/lobby_room_code"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="395dp" />
 </RelativeLayout>

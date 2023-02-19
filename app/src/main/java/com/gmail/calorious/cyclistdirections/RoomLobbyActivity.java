@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import androidx.annotation.Nullable;
@@ -19,17 +20,22 @@ import com.gmail.calorious.cyclistdirections.generic.Room;
 import com.gmail.calorious.cyclistdirections.generic.RoomManager;
 import com.gmail.calorious.cyclistdirections.generic.User;
 import com.gmail.calorious.cyclistdirections.generic.UsersViewAdapter;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class RoomLobbyActivity extends AppCompatActivity {
+public class RoomLobbyActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = "RoomLobbyActivity";
     private RecyclerView participants_list;
+    private MapView user_location_map;
     private User user;
     private Room room;
+    private GoogleMap googleMap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +45,7 @@ public class RoomLobbyActivity extends AppCompatActivity {
         setSupportActionBar(top_toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Lobby");
         participants_list = findViewById(R.id.lobby_participants_list);
+        user_location_map = findViewById(R.id.lobby_user_location);
         String user_uuid_string = bundle.getString("USER_UUID");
         String room_code = bundle.getString("ROOM_CODE");
         user = FirebaseCentre.getUser(user_uuid_string);
@@ -82,5 +89,10 @@ public class RoomLobbyActivity extends AppCompatActivity {
             finish();
             return;
         }
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+
     }
 }
