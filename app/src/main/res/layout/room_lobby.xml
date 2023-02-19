@@ -26,4 +26,26 @@
         android:background="#A69A9999"
         android:textAlignment="center"
         android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/NOMODIFY_PARTICIPANTS_HEADER"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="205dp"
+        android:layout_marginBottom="375dp"
+        android:background="#A69A9999"
+        android:paddingStart="10dp"
+        android:text="Participants"
+        android:textColor="#FFFFFFFF" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lobby_participants_list"
+        android:layout_width="207dp"
+        android:layout_height="336dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="40dp" />
 </RelativeLayout>

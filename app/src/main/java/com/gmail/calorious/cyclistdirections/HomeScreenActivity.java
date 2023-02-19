@@ -17,6 +17,7 @@ import com.gmail.calorious.cyclistdirections.firebase.FirebaseCentre;
 import com.gmail.calorious.cyclistdirections.generic.Room;
 import com.gmail.calorious.cyclistdirections.generic.RoomManager;
 import com.gmail.calorious.cyclistdirections.generic.User;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class HomeScreenActivity extends AppCompatActivity {
+    private User user;
     private Button createRoomButton, joinRoomButton;
     private EditText joinRoomField;
     private TextView loggedInMessage;
@@ -54,7 +56,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             ex.printStackTrace();
             return;
         }
-        User user = FirebaseCentre.getUser(uid);
+        user = FirebaseCentre.getUser(uid);
         if(user == null) {
             Log.e("Login Handler", "The UUID was retrieved from security.txt, but Firebase could not resolve the UUID.");
             return;
@@ -73,6 +75,7 @@ public class HomeScreenActivity extends AppCompatActivity {
             Log.d("Rooms", "A new room has been generated with code '" + generatedRoom.getCode() + "'.");
             RoomManager.updateRoom(generatedRoom.getCode(), generatedRoom);
             Intent intent = new Intent(this, RoomLobbyActivity.class);
+            intent.putExtra("USER_UUID", user.getUUID().toString());
             intent.putExtra("ROOM_CODE", generatedRoom.getCode());
             startActivity(intent);
             return;
